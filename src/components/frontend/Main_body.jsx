@@ -56,7 +56,7 @@ const Main_body = () => {
 
   return (
     <>
-    <section className='mt-8 w-full min-h-screen relative flex flex-row' onMouseOver={()=>setHover(true)} onMouseOut={()=>setHover(false)}>
+    <section className='mt-8 -z-20 w-full min-h-screen relative flex flex-row' onMouseOver={()=>setHover(true)} onMouseOut={()=>setHover(false)}>
       {obj.map((hero,id)=>{
         if(id===imgLen){
         return (
@@ -66,7 +66,7 @@ const Main_body = () => {
               <p>{hero.para}</p>
               <button className=' outline border-1 border-black border-solid px-5 py-3 hover:bg-red-500 hover:outline-red-500 duration-[0.4s]' >SHOP NOW</button>
             </div>
-            <div className='flex justify-center items-center lg:w-[50%] sm:w-[50%] sm:h-[60vh] h-60vh sm:w-[300px] md:h-[80vh]'>
+            <div className='flex justify-center items-center h-[40vh] lg:w-[50%] sm:w-[50%] sm:h-[60vh] h-60vh md:h-[80vh]'>
               <img className='md:w-[100%] lg-w-[100%]  object-fit' src={hero.image} alt="" />
             </div>
         </div>
