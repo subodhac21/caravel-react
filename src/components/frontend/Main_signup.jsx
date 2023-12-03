@@ -1,17 +1,20 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { loginUser } from '../../auth/authSlice';
-
+import Home from '../../routes/Home';
+import { Navigate } from 'react-router-dom';
 
 const Main_signup = () => {
     //redux dispatch
 
     const dispatch = useDispatch();
 
-
+    let isLogin = useSelector((state)=>{
+        return state.authReducer.signin[0];
+      })
 
     //router navigate
     const navigate = useNavigate();
@@ -39,10 +42,9 @@ const Main_signup = () => {
         };
         if(fullname != "" &&  email != "" && password != "" && cpassword != ""){
           
-
             axios.post("http://127.0.0.1:8000/api/register", userData).then((response) => {
                 console.log(response);
-                dispatch(loginUser({fullname: fullname, email: email, token: response.data.api_token, image: response.data.image}));
+                dispatch(loginUser({fullname: fullname, email: email, token: response.data.api_token, image: response.data.image, type: "customer"}));
                 localStorage.setItem('loginItem', response.api_token);
                 navigate("/");
                 setFullname("");
@@ -62,7 +64,7 @@ const Main_signup = () => {
         // console.log(status);
     }
   return (
-    <form onSubmit={(e)=>submitForm(e)} className=''>
+    isLogin.token != "" ? <Navigate to="/"/> :<form onSubmit={(e)=>submitForm(e)} className='mt-0 mb-8'>
       <div className="bg-grey-lighter min-h-screen flex flex-col">
             <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
                 <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">

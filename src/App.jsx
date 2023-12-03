@@ -12,16 +12,25 @@ import  axios  from 'axios';
 import AboutUs from './routes/AboutUs';
 import FPass from './routes/FPass';
 import Loader from './components/frontend/Loader';
+import PageNotFound from './routes/PageNotFound';
+import Dashboard from './routes/Dashboard';
+import AdminPage from './components/Admin/AdminPage';
+import Products from './components/Admin/Products';
+import AdminLoginpage from './components/Admin/AdminLoginpage';
+import ViewProduct from './components/Admin/ViewProduct';
+
 
 const App = () => {
  
-  const loginData = useSelector((state)=>{
-    return state.signin;
-  })
+  const [isLogin, setIsLogin] = useState(false);
+
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   // console.log(isLogin);
   let tokenInfilestorage = localStorage.getItem("loginItem");
+  const loginData = useSelector((state)=>{
+    return state.authReducer.signin[0];
+  })
   
   useEffect(()=>{
     if(tokenInfilestorage != ""){
@@ -34,23 +43,30 @@ const App = () => {
       try{
         const data = axios.post(url, userData).then((response) => {
           // console.log(response.data.user[0].fullname);
-          dispatch(loginUser({fullname: response.data.fullname, email: response.data.email, token: response.data.api_token, image: response.data.image}));
-  
-          setLoading(false); 
+          if(response.data.status==='true'){
+            if(response.data.type==='customer'){
+              dispatch(loginUser({fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: "customer"}));
+              setIsLogin(true); 
+            }
+            else if(response.data.type==='admin')
+              dispatch(loginUser({fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: "admin"}));
+         
+          }
+          setLoading(false);
+          
         }); 
 
       }catch(e){
 
         console.log(e);
       }
-
-
-      
     
     }
       else{
-        dispatch(loginUser({fullname: "", email: "", token: "", image: ""}));
-        setLoading(false); 
+        dispatch(loginUser({fullname: "", email: "", token: "", image: "", type: ""}));
+        setLoading(false);
+        setIsLogin(false); 
+
     
       }
   },[]);
@@ -59,18 +75,24 @@ const App = () => {
     {
       loading === true ? <Loader/> :
     <Routes>
+      <Route path='*' element={<PageNotFound/>}/>
       <Route path="/" element={<Home/>}/>
       <Route path='/contact-us' element={<ContactUs/>}/>
       {/* <Route path='/products' element={<Products/>}/> */}
 
-      <Route path='/signup' element={<SignUp loginData={loginData}/>} />
+      <Route path='/signup' element={<SignUp/>} />
       <Route path='/cart' element={<Cart/>}/>
-      <Route path='/signin' element={<SignIn loginData={loginData}/>}/>
+      <Route path='/signin' element={<SignIn isLogin={isLogin}/>}/>
       <Route path='/about-us' element={<AboutUs/>}/>
 
       <Route path='/user-profile' element={<UserProfile/>}></Route>
       <Route path='/fpass' element={<FPass/>}></Route>
-
+      <Route path='/dashboard' element={<Dashboard/>}>
+        <Route index element={<AdminPage/>}/>
+        <Route path='products' element={<Products/>}/>
+        <Route path='view_products' element={<ViewProduct/>}/>
+      </Route>
+      <Route path='adminloginpage' element={<AdminLoginpage/>}/>
     </Routes>
 }
     

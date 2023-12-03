@@ -21,7 +21,7 @@ import { loginUser } from '../../auth/authSlice';
 const Navbar = () => {
   const dispatch = useDispatch();
   let isLogin = useSelector((state)=>{
-    return state.signin;
+    return state.authReducer.signin[0];
   })
   // console.log(isLogin);
   // useEffect(()=>{
@@ -66,13 +66,14 @@ const Navbar = () => {
  
   return (
     <>
-    <header onClick={()=>setCat((prev)=>{false})} className={`w-full mb-16 text-white bg-[#0f172a] h-[auto] flex justify-center items-center p-4 z-0`}>
-      <nav className='w-[92%] flex justify-between items-center m-auto'>
+    <header onClick={()=>setCat((prev)=>{false})} className={`w-full text-white bg-[#0f172a] h-[auto] flex justify-center items-center p-4 z-10`}>
+      <nav className='w-[92%] flex justify-between items-center m-auto z-0'>
         <div className='w-12 h-12'>
-        <img src={logo} alt="" />
+          <Link to="/"><img src={logo} alt="logo" /></Link>
+        
         </div>
-        <div  className={`md:static duration-[0.6s] bg-[#0f172a] md:bg-[#0f172a] absolute md:min-h-fit min-h-[70vh] pt-[50px] md:pt-[0px] md:w-auto -z-0 md:z-0 flex flex-row items-start justify-center left-0 top-[-100%] md:top-[-10px] w-full ${drop ? "top-[10%]" : ""}`}>
-          <ul className='flex align-middle justify-between items-center md:flex-row flex-col md:gap-[4em] gap-[2em]'>
+        <div  className={`md:static duration-[0.6s] bg-[#18223a] md:bg-[#0f172a] absolute md:min-h-fit min-h-[70vh] pt-[50px] md:pt-[0px] md:w-auto flex flex-row items-start justify-center left-0 top-[-100%] md:top-[-10px] w-full ${drop ? "top-[12%] z-22 md:z-0" : "-z-66"}`}>
+          <ul className='flex align-middle text-[16px] justify-between items-center md:flex-row flex-col md:gap-[4em] gap-[2em] z-999999'>
           <li className='hover:text-red-500 duration-[0.6s]'> <Link to="/">Home</Link></li>
             <li className='hover:text-red-500 duration-[0.6s]'><Link to="/contact-us">Contact Us</Link></li>
             <li className='hover:text-red-500 duration-[0.6s] cursor-pointer'><p onClick={()=>setCat((prev)=>{false})} onMouseOver={()=>setCat((prev)=>{return true;})} >Products</p>
@@ -91,23 +92,21 @@ const Navbar = () => {
             </ul> */}
             </li>
             <li className='hover:text-red-500 duration-[0.6s]'><Link to="/about-us">About Us</Link></li>
-            
-
           </ul>
         </div>
         <div className='flex flex-row justify-between md:gap-[1.5em] gap-[1em] items-center'>
           {
             isLogin.token === "" ?
           <Link className='hover:text-red-500 duration-[0.6s]' to="/signin">
-          <button type="button" className="bg-[#1da1f2] text-white inline-flex pl-3.5 pr-5 py-2 duration-[0.5] hover:bg-[#59bbf8] font-medium rounded-md items-center text-sm space-x-3">
+          <button type="button" className="bg-[#1da1f2] text-white inline-flex pl-3.5 pr-5 py-2 duration-[0.5] hover:bg-[#59bbf8] font-medium rounded-md items-center text-sm space-x-3 text-[16px">
     <span>Sign In</span>
          </button>
           </Link> : <Link className='w-[40px] hover:text-red-500 duration-[0.6s] rounded-full' to="/user-profile">
-              <img className='w-[40px] h-[40px] rounded-full' src={`http://127.0.0.1:8000/assets/${isLogin.image}`} alt="" />
+              <img className='w-[38px] h-[38px] rounded-full' src={`http://127.0.0.1:8000/assets/${isLogin.image}`} alt="" />
               </Link>  }
-          <Link className='hover:text-red-500 duration-[0.6s]' to="/cart-page"><FontAwesomeIcon className='text-[1.6rem]' icon={faCartPlus} /><span className='rounded'>4</span></Link>
-          <div onClick={()=>{modalPlay()}} className='p-1.5 md:p-0 rounded-md md:static right-5 text-white -z-10 md:z-0 md:text-white top-[6em] absolute'>
-            <p className='hover:text-red-500 text-white' to="/cartpage"><FontAwesomeIcon className='text-[1.6rem]' icon={faMagnifyingGlass} /></p>
+          <Link className='hover:text-red-500 duration-[0.6s]' to="/cart-page"><FontAwesomeIcon className='text-[1.5rem]' icon={faCartPlus} /><span className='rounded text-[16px] text-[red]'>4</span></Link>
+          <div onClick={()=>{modalPlay()}} className='p-2 md:p-0 bg-white md:bg-black rounded-md md:static right-5 text-white -z-10 md:z-0 md:text-white top-[6em] absolute'>
+            <p className='hover:text-red-500 md:text-white text-black' to="/cartpage"><FontAwesomeIcon className='text-[1.5rem]' icon={faMagnifyingGlass} /></p>
           </div>
 
           <FontAwesomeIcon onClick={()=>{setDrop(!drop)}} className={`w-8 h-8 md:hidden ${drop? "hidden": 'block'}`} icon={faBars} />

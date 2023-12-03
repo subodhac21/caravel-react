@@ -1,29 +1,33 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Link,useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux';
+import { Link,useNavigate, Navigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../auth/authSlice';
+import Loader from './Loader';
+import Modal from './Modal';
 
 const Login = () => {
-
-  const dispatch = useDispatch();
+  const [load1,setLoad] = useState();
   const [logindetail, setLoginDetail] = useState({
     password: "",
     email: "",
   });
+  let isLogin = useSelector((state)=>{
+    return state.authReducer.signin[0];
+  })
+  // const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
   const [status, setStatus] = useState({
     status: "",
     color: ''
 });
-useEffect(()=>{
-   setLoginDetail({password: "", email: ""});
-},[]);
 
-
-const navigate = useNavigate();
 
   const submitForm = (e) =>{
     e.preventDefault();
+    setLoad(true);
     if(logindetail.email != "" && logindetail.password != ""){
       let userData = {
         email: logindetail.email,
@@ -36,10 +40,13 @@ const navigate = useNavigate();
         //   password: ""
         // });
         if(response.data.status==="true"){
-          setStatus({status: response.data.message, color: "blue-700"});
-          dispatch(loginUser({fullname: response.data.fullname, email: logindetail.email, token: response.data.api_token, image: response.data.image}));
+          // setStatus({status: response.data.message, color: "blue-700"});
+          dispatch(loginUser({fullname: response.data.fullname, email: logindetail.email, token: response.data.api_token, image: response.data.image, type: "customer"}));
           localStorage.setItem('loginItem', response.data.api_token);
           navigate("/");
+        }
+        else{
+          setLoad(false);
         }
         
     });
@@ -52,10 +59,12 @@ const navigate = useNavigate();
   }
 
   return (
-    <div className='w-[100%] -z-20'>
+    
+    isLogin.token != "" ? <Navigate to="/"/> : <div className='w-[100%] -z-20 mt-16 mb-16'>
       <div className="md:w-[40%] w-[100%] -z-20 mx-auto bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
       <div className="p-6 space-y-4 md:space-y-6 sm:p-8 -z-20">
       <p className={`w-[100%] mx-auto text-center text-lg mb-4 text-${status.color} `} >{status.status}</p>
+      <h1 className='text-lg text-center bg-black rounded-lg text-[red]'>{load1 === false ? "Invalid Credentials": ""}</h1>
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Sign in to your account
               </h1>
@@ -86,6 +95,8 @@ const navigate = useNavigate();
               </form>
           </div>
     </div>
+    
+    {load1 && <><Loader type={"two"}/></> }
     </div>
   )
 }
